@@ -11,7 +11,7 @@
 				height: 100%;
 			}
 		</style>
-		<title>OpenLayers - TileCloud</title>
+		<title>OpenLayers - TileBox</title>
 	</head>
 	<body>
 		<div id="map" style="width: 100%; height: 100%;">

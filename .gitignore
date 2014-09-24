@@ -4,7 +4,7 @@
 /include
 /lib
 /man
-/tilecloud.egg-info
+/tilebox.egg-info
 .coverage
 *.egg
 *.jpg

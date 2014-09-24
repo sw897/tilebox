@@ -11,7 +11,7 @@
 				height: 100%;
 			}
 		</style>
-		<title>Modest Maps - TileCloud</title>
+		<title>Modest Maps - TileBox</title>
 	</head>
 	<body>
 		<div id="map" class="map" style="width: 100%; height: 100%;">

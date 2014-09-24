@@ -6,12 +6,12 @@ import os.path
 import sqlite3
 import sys
 
-from tilecloud import Tile, TileCoord, consume
-from tilecloud.filter.error import DropErrors
-from tilecloud.filter.logger import Logger
-from tilecloud.store.mbtiles import MBTilesTileStore
-from tilecloud.store.renderingtheworld import RenderingTheWorldTileStore
-from tilecloud.store.wmts import WMTSTileStore
+from tilebox import Tile, TileCoord, consume
+from tilebox.filter.error import DropErrors
+from tilebox.filter.logger import Logger
+from tilebox.store.mbtiles import MBTilesTileStore
+from tilebox.store.renderingtheworld import RenderingTheWorldTileStore
+from tilebox.store.wmts import WMTSTileStore
 
 
 logging.basicConfig(level=logging.DEBUG)

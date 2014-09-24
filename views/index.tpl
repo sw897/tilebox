@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 	<head>
-		<title>TileCloud</title>
+		<title>TileBox</title>
 	</head>
 	<body>
 		<ul>

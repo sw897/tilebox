@@ -5,9 +5,9 @@ import logging
 import os.path
 import sys
 
-from tilecloud import BoundingPyramid, TileStore, consume
-from tilecloud.filter.logger import Logger
-from tilecloud.store.boundingpyramid import BoundingPyramidTileStore
+from tilebox import BoundingPyramid, TileStore, consume
+from tilebox.filter.logger import Logger
+from tilebox.store.boundingpyramid import BoundingPyramidTileStore
 
 
 logging.basicConfig(level=logging.INFO)

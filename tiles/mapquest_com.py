@@ -1,5 +1,5 @@
-from tilecloud.layout.template import TemplateTileLayout
-from tilecloud.store.url import URLTileStore
+from tilebox.layout.template import TemplateTileLayout
+from tilebox.store.url import URLTileStore
 
 
 tilestore = URLTileStore(

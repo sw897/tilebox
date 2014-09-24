@@ -11,7 +11,7 @@
 				height: 100%;
 			}
 		</style>
-		<title>Polymaps - TileCloud</title>
+		<title>Polymaps - TileBox</title>
 	</head>
 	<body>
 		<script type="text/javascript">

@@ -1,4 +1,4 @@
-from tilecloud.store.wmts import WMTSTileStore
+from tilebox.store.wmts import WMTSTileStore
 
 
 tilestore = WMTSTileStore(

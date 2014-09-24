@@ -18,7 +18,7 @@ tests_require = install_requires + [
         ]
 
 setup(
-        name='tilecloud',
+        name='tilebox',
         version=version,
         description='Tools for managing tiles',
         classifiers=[
@@ -31,15 +31,15 @@ setup(
         ],
         author='Tom Payne',
         author_email='twpayne@gmail.com',
-        url='http://github.com/twpayne/tilecloud',
+        url='http://github.com/twpayne/tilebox',
         license='BSD',
-        packages=find_packages(exclude=['tiles', 'tilecloud.tests']),
+        packages=find_packages(exclude=['tiles', 'tilebox.tests']),
         zip_safe=True,
         install_requires=install_requires,
         setup_requires=setup_requires,
         tests_require=tests_require,
-        test_suite='tilecloud.tests',
-        scripts=glob('tc-*'),
+        test_suite='tilebox.tests',
+        scripts=glob('tb-*'),
         entry_points="""
         # -*- Entry points: -*-
         """,

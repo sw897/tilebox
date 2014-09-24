@@ -2,7 +2,7 @@ import errno
 import os
 import os.path
 
-from tilebox import Tile, TileStore
+from tilebox import Tile, TileStore, TileFormat
 
 
 class FilesystemTileStore(TileStore):
@@ -26,10 +26,32 @@ class FilesystemTileStore(TileStore):
 
     def get_one(self, tile):
         filename = self.tilelayout.filename(tile.tilecoord)
+        if os.path.isfile(filename):
+            return self._get_one(tile, filename)
+        else:
+            if tile.content_type:
+                tileformat = TileFormat.from_content_type(tile.content_type)
+            elif self.content_type:
+                tileformat = TileFormat.from_content_type(self.content_type)
+            else:
+                tileformat = TileFormat()
+            filename = filename + tileformat.ext
+            if os.path.isfile(filename):
+                return self._get_one(tile, filename)
+            else:
+                filenames = map(lambda ext: filename + ext, tileformat.extentions)
+                for filename in filenames:
+                    if os.path.isfile(filename):
+                        tile = self._get_one(tile, filename)
+                        if tile is not None:
+                            return tile
+                return None
+
+    def _get_one(self, tile, filename):
         try:
             with open(filename, 'rb') as file:
                 tile.data = file.read()
-            if self.content_type is not None:
+            if tile.content_type is None and self.content_type is not None:
                 tile.content_type = self.content_type
             return tile
         except IOError as e:

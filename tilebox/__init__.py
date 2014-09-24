@@ -740,3 +740,38 @@ class TileStore(object):
                         components[1:],
                         module)
         return getattr(module, 'tilestore')
+
+
+class TileFormat(object):
+
+    tileformats  = ["UnKnown", "JPEG", "PNG", "DDS", "WebP", "JSON", "ProBuf", ]
+    contenttypes = [None, "image/jpeg", "image/png", "image/dds", "image/webp", "application/json", "application/probuf",]
+    extentions   = ["", ".jpg",       ".png",      ".dds",      ".webp",      ".json",            ".pb",]
+
+    def __init__(self, index = 0):
+        if index < 0 or index > len(self.tileformats) - 1:
+            index = 0
+        self.format = self.tileformats[index]
+        self.content_type = self.contenttypes[index]
+        self.ext = self.extentions[index]
+
+    @classmethod
+    def from_content_type(cls, contenttype):
+        index = 0
+        if contenttype in cls.contenttypes:
+            index = cls.contenttypes.index(contenttype)
+        return TileFormat(index)
+
+    @classmethod
+    def from_extentions(cls, ext):
+        index = 0
+        if ext in cls.extentions:
+            index = cls.extentions.index(ext)
+        return TileFormat(index)
+
+    @classmethod
+    def from_format_name(cls, name):
+        index = 0
+        if name in cls.tileformats:
+            index = cls.tileformats.index(ext)
+        return TileFormat(index)

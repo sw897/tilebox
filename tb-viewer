@@ -7,16 +7,16 @@ import sys
 
 import bottle
 
-from tilebox import Bounds, BoundingPyramid, Tile, TileCoord, TileStore
+from tilebox import Bounds, BoundingPyramid, Tile, TileCoord, TileStore, TileFormat
 from tilebox.filter.contenttype import ContentTypeAdder
-
+from tilebox.filter.image import ImageFormatConverter
 
 option_parser = OptionParser()
 option_parser.add_option('--cache', action='store_true')
 option_parser.add_option('--debug', action='store_true', default=False)
 option_parser.add_option('--root', metavar='Z/X/Y')
 option_parser.add_option('--host', default='127.0.0.1', metavar='HOST')
-option_parser.add_option('--port', default=8080, metavar='PORT', type=int)
+option_parser.add_option('--port', default=8090, metavar='PORT', type=int)
 option_parser.add_option('--quiet', action='store_true', default=False)
 option_parser.add_option('--max-extent', metavar='MAX-EXTENT', type=str)
 option_parser.add_option('--resolutions', metavar='RESOLUTIONS', type=str)
@@ -44,21 +44,22 @@ cache = {} if options.cache else None
 max_extent = options.max_extent
 resolutions = options.resolutions
 tilestores = [(os.path.basename(arg), TileStore.load(arg)) for arg in args]
-content_type_adder = ContentTypeAdder()
-
 
 @bottle.route('/tiles/<index:int>/tiles/<z:int>/<x:int>/<y:int><ext:re:.*>')
 def tile(index, z, x, y, ext):
-    # FIXME check ext
     if len(tilestores) < index:
         bottle.abort(404)
     tilecoord = TileCoord(z + root.z,
                           x + root.x * (1 << z),
                           y + root.y * (1 << z))
+    tileformat = TileFormat.from_extentions(ext)
+
+    content_type_adder = ContentTypeAdder(tileformat.content_type)
+
     if cache is not None and (index, z, x, y) in cache:
         tile = cache[(index, z, x, y)]
     else:
-        tile = Tile(tilecoord)
+        tile = Tile(tilecoord, content_type=tileformat.content_type)
         tile = tilestores[index][1].get_one(tile)
         if cache is not None:
             cache[(index, z, x, y)] = tile
@@ -66,7 +67,15 @@ def tile(index, z, x, y, ext):
         bottle.abort(404)
     if tile.data is None:
         bottle.abort(204)
-    tile = content_type_adder(tile)
+
+    if tile.content_type is None:
+        tile = content_type_adder(tile)
+
+    if tile.content_type is not None and tileformat.content_type is not None:
+        if tile.content_type != tileformat.content_type:
+            image_format_converter = ImageFormatConverter(tileformat.content_type)
+            tile = image_format_converter(tile)
+
     if tile.content_type is not None:
         bottle.response.content_type = tile.content_type
     if tile.content_encoding is not None:

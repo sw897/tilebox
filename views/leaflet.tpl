@@ -3,8 +3,8 @@
         <head>
                 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
                 <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
-                <link rel="stylesheet" href="http://leaflet.cloudmade.com/dist/leaflet.css" type="text/css">
-                <script type="text/javascript" src="http://leaflet.cloudmade.com/dist/leaflet.js"></script>
+                <link rel="stylesheet" href="static/leaflet/leaflet.css" type="text/css">
+                <script type="text/javascript" src="static/leaflet/leaflet.js"></script>
                 <style type="text/css">
                         html, body, #map {
                                 margin: 0;

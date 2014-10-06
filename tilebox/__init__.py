@@ -708,10 +708,9 @@ class TileStore(object):
             bucket, template = name[5:].split('/', 1)
             return S3TileStore(bucket, TemplateTileLayout(template))
         if name.startswith('mongodb://'):
-            from tilebox.layout.template import TemplateTileLayout
-            from tilebox.store.mongodb import MongoTileStore
+            from tilebox.store.mongodb import MongoDbTileStore
             connection, database, collection = name[10:].split('/', 2)
-            return MongoTileStore(connection, database, collection, TemplateTileLayout(template))
+            return MongoDbTileStore(connection, database, collection)
         if name.startswith('sqs://'):
             from tilebox.store.sqs import SQSTileStore
             import boto.sqs
@@ -730,6 +729,10 @@ class TileStore(object):
             import sqlite3
             from tilebox.store.mbtiles import MBTilesTileStore
             return MBTilesTileStore(sqlite3.connect(name))
+        if ext == '.tilelite':
+            import sqlite3
+            from tilebox.store.tilelite import TileliteTileStore
+            return TileliteTileStore(sqlite3.connect(name))
         if ext == '.zip':
             import zipfile
             from tilebox.store.zip import ZipTileStore
@@ -744,9 +747,10 @@ class TileStore(object):
 
 class TileFormat(object):
 
-    tileformats  = ["UnKnown", "JPEG", "PNG", "DDS", "WebP", "JSON", "ProBuf", ]
-    contenttypes = [None, "image/jpeg", "image/png", "image/dds", "image/webp", "application/json", "application/probuf",]
-    extentions   = ["", ".jpg",       ".png",      ".dds",      ".webp",      ".json",            ".pb",]
+    tileformats  = ["UnKnown",  "JPEG",         "PNG",          "DDS",          "WebP",         "JSON",             "ProBuf", ]
+    contenttypes = [None,       "image/jpeg",   "image/png",    "image/dds",    "image/webp",   "application/json", "application/probuf",]
+    extentions   = ["",         ".jpg",         ".png",         ".dds",         ".webp",        ".json",            ".pb",]
+    typeindexs   = [-1,         2,              13,             24,             35,             101,                201,]
 
     def __init__(self, index = 0):
         if index < 0 or index > len(self.tileformats) - 1:
@@ -754,6 +758,14 @@ class TileFormat(object):
         self.format = self.tileformats[index]
         self.content_type = self.contenttypes[index]
         self.ext = self.extentions[index]
+        self.typeindex = self.typeindexs[index]
+
+    @classmethod
+    def from_type_index(cls, typeindex):
+        index = 0
+        if typeindex in cls.typeindexs:
+            index = cls.typeindexs.index(typeindex)
+        return TileFormat(index)
 
     @classmethod
     def from_content_type(cls, contenttype):
@@ -763,7 +775,7 @@ class TileFormat(object):
         return TileFormat(index)
 
     @classmethod
-    def from_extentions(cls, ext):
+    def from_extention(cls, ext):
         index = 0
         if ext in cls.extentions:
             index = cls.extentions.index(ext)

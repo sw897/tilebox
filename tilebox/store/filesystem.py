@@ -37,12 +37,17 @@ class FilesystemTileStore(TileStore):
                 tileformat = TileFormat()
             filename = filename + tileformat.ext
             if os.path.isfile(filename):
+                tile.content_type = tileformat.content_type
                 return self._get_one(tile, filename)
             else:
-                filenames = map(lambda ext: filename + ext, tileformat.extentions)
-                for filename in filenames:
-                    if os.path.isfile(filename):
-                        tile = self._get_one(tile, filename)
+                # filenames = map(lambda ext: filename + ext, tileformat.extentions)
+                # for filename in filenames:
+                for ext in tileformat.extentions:
+                    filename2 = filename + ext
+                    if os.path.isfile(filename2):
+                        tileformat = TileFormat.from_extention(ext)
+                        tile.content_type = tileformat.content_type
+                        tile = self._get_one(tile, filename2)
                         if tile is not None:
                             return tile
                 return None
@@ -72,6 +77,13 @@ class FilesystemTileStore(TileStore):
     def put_one(self, tile):
         assert tile.data is not None
         filename = self.tilelayout.filename(tile.tilecoord)
+        if tile.content_type:
+            tileformat = TileFormat.from_content_type(tile.content_type)
+        elif self.content_type:
+            tileformat = TileFormat.from_content_type(self.content_type)
+        else:
+            tileformat = TileFormat()
+        filename = filename + tileformat.ext
         dirname = os.path.dirname(filename)
         if not os.path.exists(dirname):
             os.makedirs(dirname)
